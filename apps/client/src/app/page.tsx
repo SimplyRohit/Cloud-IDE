@@ -10,14 +10,14 @@ import Bottombar from "../components/Bottombar";
 import axios from "axios";
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
-import Auth from "../components/Auth";
+// import Auth from "../components/Auth";
 const HomePage = () => {
   const [tabs, setTabs] = useState([]);
   const [activeFilePath, setActiveFilePath] = useState("");
   const [fileContent, setFileContent] = useState("");
   const [isExplorerOpen, setIsExplorerOpen] = useState(true);
   const [isXtermOpen, setIsXtermOpen] = useState(true);
-  const [isLogin, setIsLogin] = useState(true);
+  // const [isLogin, setIsLogin] = useState(true);
   useEffect(() => {
     if (activeFilePath) {
       fetchFileContent(activeFilePath);
@@ -52,7 +52,8 @@ const HomePage = () => {
   const handleTabClose = (filePath: string) => {
     setTabs((prevTabs) => prevTabs.filter((tab) => tab.path !== filePath));
     if (filePath === activeFilePath) {
-      setActiveFilePath(tabs.length > 1 ? tabs[0].path : "");
+      setFileContent("");
+      setActiveFilePath("");
     }
   };
 

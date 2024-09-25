@@ -2,10 +2,16 @@ import http from "http";
 import chokidar from "chokidar";
 import express from "express";
 import { Server as SocketServer } from "socket.io";
+import fs from "fs/promises";
+import path from "path";
 import pty from "node-pty";
 import cors from "cors";
-import { promises as fs } from "fs";
-import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const app = express();
 const server = http.createServer(app);
 
@@ -21,7 +27,6 @@ app.use(express.json());
 
 const ptyProcess = pty.spawn("bash", [], {
   name: "xterm-color",
-
   cwd: "user",
   env: process.env,
 });
@@ -53,6 +58,7 @@ app.get("/files", async (req, res) => {
     res.status(500).send("Error fetching file tree");
   }
 });
+
 app.get("/files/:filePath", async (req, res) => {
   try {
     const { filePath } = req.params;
@@ -66,6 +72,7 @@ app.get("/files/:filePath", async (req, res) => {
     res.status(500).send("Error fetching file content");
   }
 });
+
 app.post("/files/:filePath", async (req, res) => {
   try {
     const { filePath } = req.params;

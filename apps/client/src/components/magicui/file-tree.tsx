@@ -1,3 +1,4 @@
+// apps/client/src/components/magicui/file-tree.tsx
 "use client";
 
 import React, {

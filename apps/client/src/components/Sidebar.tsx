@@ -43,7 +43,7 @@ const Sidebar = ({
   return (
     <div className="bg-[#181818] flex flex-col border-r-[1px] border-[#3C3C3C] justify-between min-w-[2.8vw] h-full">
       <div>
-        {sidebarTopItems.map(({ Icon, index }) => (
+        {sidebarTopItems.map(({ Icon }, index) => (
           <div
             key={index}
             onClick={() => {
@@ -64,7 +64,7 @@ const Sidebar = ({
       </div>
 
       <div>
-        {sidebarBottomItems.map(({ Icon, index }) => (
+        {sidebarBottomItems.map(({ Icon }, index) => (
           <div
             key={index}
             className={`cursor-pointer w-full hover:bg-[var(--sidebar-hover-bg)]
