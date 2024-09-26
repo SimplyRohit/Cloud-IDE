@@ -1,13 +1,17 @@
-// Explorer.tsx
 "use client";
 import { useState, useEffect } from "react";
-import { ChevronRight, FolderOpen, FolderClosed, File } from "lucide-react";
-// import {  CollapseButton, File, Folder, Tree, type TreeViewElement } from "./magicui/file-tree";
+import { ChevronRight, FolderOpen, FolderClosed, FileIcon } from "lucide-react";
 import axios from "axios";
 import socket from "../../socket";
+import {
+  FolderNodeIcon,
+  FolderNodeIconOpen,
+  FolderNextIcon,
+  FolderNextIconOpen,
+} from "../icons/ExplorerFolderIcons";
+import { GitIcon, ReacttsIcon } from "../icons/ExplorerFileIcons";
 
 const Explorer = ({ onFileSelect }) => {
-  const [userOpen, setUserOpen] = useState(true);
   const [fileTree, setFileTree] = useState({});
   const [openDirectories, setOpenDirectories] = useState(new Map());
 
@@ -40,87 +44,105 @@ const Explorer = ({ onFileSelect }) => {
     });
   };
 
-  const handleFileClick = (path: string) => {
+  const handleFileClick = (path) => {
     onFileSelect(path);
   };
 
+  const getFolderIcon = (folderName, isOpen) => {
+    if (folderName === "node_modules") {
+      return isOpen ? (
+        <FolderNodeIconOpen className="mr-2 w-4" />
+      ) : (
+        <FolderNodeIcon className="mr-2 w-4" />
+      );
+    } else if (folderName === "next") {
+      return isOpen ? (
+        <FolderNextIconOpen className="mr-2 w-4" />
+      ) : (
+        <FolderNextIcon className="mr-2 w-4" />
+      );
+    } else {
+      return isOpen ? (
+        <FolderOpen className="mr-2 w-4" />
+      ) : (
+        <FolderClosed className="mr-2 w-4" />
+      );
+    }
+  };
+
+  const getFileIcon = (fileName) => {
+    if (fileName.endsWith(".tsx")) {
+      return <ReacttsIcon className="mr-2 w-4" />;
+    } else if (fileName.endsWith(".gitignore")) {
+      return <GitIcon className="mr-2 w-4" />;
+    } else {
+      return <FileIcon className="mr-2 w-4" />;
+    }
+  };
+
   const renderTree = (node, path = "") => {
+    const directories = [];
+    const files = [];
+
+    Object.entries(node).forEach(([key, value]) => {
+      const isDirectory =
+        value && typeof value === "object" && !Array.isArray(value);
+      if (isDirectory) {
+        directories.push([key, value]);
+      } else {
+        files.push(key);
+      }
+    });
+
+    directories.sort(([a], [b]) => a.localeCompare(b));
+    files.sort((a, b) => a.localeCompare(b));
+
     return (
-      <div key={path}>
-        {Object.entries(node).map(([key, value]) => {
-          const isDirectory =
-            value && typeof value === "object" && !Array.isArray(value);
+      <div key={path} className="pl-4">
+        {directories.map(([key, value]) => {
           const isOpen = openDirectories.get(path + key) || false;
 
           return (
-            <div
-              key={path + key}
-              style={{ marginLeft: isDirectory ? "20px" : "0" }}
-            >
+            <div key={path + key}>
               <div
                 className="flex items-center cursor-pointer"
-                onClick={() =>
-                  isDirectory
-                    ? toggleDirectory(path + key)
-                    : handleFileClick(path + key)
-                }
+                onClick={() => toggleDirectory(path + key)}
               >
-                {isDirectory ? (
-                  isOpen ? (
-                    <FolderOpen
-                      className={`mr-2 w-4  transition-transform duration-200 `}
-                    />
-                  ) : (
-                    <FolderClosed
-                      className={`mr-2 w-4  transition-transform duration-200 `}
-                    />
-                  )
-                ) : (
-                  <File className="mr-2 w-4" />
-                )}
-                {key}
-                {isDirectory && (
-                  <ChevronRight
-                    className={`transition-transform duration-200 w-3 ${
-                      isOpen ? "rotate-90" : ""
-                    }`}
-                    style={{ marginLeft: "auto" }}
-                  />
-                )}
+                {getFolderIcon(key, isOpen)}
+                <span>{key}</span>
+                <ChevronRight
+                  className={`transition-transform duration-200 w-3 ${isOpen ? "rotate-90" : ""}`}
+                  style={{ marginLeft: "auto " }}
+                />
               </div>
-              {isDirectory && isOpen && renderTree(value, path + key + "/")}
+              {isOpen && renderTree(value, path + key + "/")}
             </div>
           );
         })}
+
+        {files.map((file) => (
+          <div
+            key={path + file}
+            className="flex items-center cursor-pointer pl-2"
+          >
+            {getFileIcon(file)}
+            <span onClick={() => handleFileClick(path + file)}>{file}</span>
+          </div>
+        ))}
       </div>
     );
   };
 
   return (
-    <div className="bg-[#181818] w-full text-[#e1e4e8] font-['Source Sans Pro'] border-x-[1px] border-[#2B2B2B]">
+    <div className="bg-[#181818] h-full w-full text-[#e1e4e8] font-['Source Sans Pro'] border-x-[1px] border-[#2B2B2B]">
       <p className="p-2 font-light uppercase text-[0.9rem] tracking-widest mb-3">
         Explorer
       </p>
       <div>
-        <div className="flex items-center   flex-row">
-          <h1
-            className="uppercase font-bold text-[0.8rem] tracking-widest flex items-center cursor-pointer px-2"
-            onClick={() => setUserOpen(!userOpen)}
-          >
-            <ChevronRight
-              className={`transition-transform duration-200 ${
-                userOpen ? "rotate-90" : ""
-              }`}
-            />
-            User
-          </h1>
-          {/* <div className="flex  items-center justify-end mr-2 w-full gap-2">
-            <FilePlus2 className="w-4 " />
-            <FolderPlus className="w-4 " />
-            <FolderSync className="w-4 " />
-          </div> */}
-        </div>
-        <div className={`px-2 py-1 ${userOpen ? "block" : "hidden"}`}>
+        <h1 className="uppercase font-bold text-[0.8rem] tracking-widest flex items-center cursor-pointer ml-2 pb-1 px-2">
+          User
+        </h1>
+        <div className={`px-2 py-1 h-[calc(100vh-10rem)] overflow-y-auto`}>
           {renderTree(fileTree)}
         </div>
       </div>

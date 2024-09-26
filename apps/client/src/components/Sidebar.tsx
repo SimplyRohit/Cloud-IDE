@@ -1,11 +1,13 @@
 "use client";
-import FilesIcon from "../icons/FilesIcon";
-import GithubIcon from "../icons/GithubIcon";
-import CodeIcon from "../icons/CodeIcon";
-import PencilIcon from "../icons/PencilIcon";
-import MailIcon from "../icons/MailIcon";
-import AccountIcon from "../icons/AccountIcon";
-import SettingsIcon from "../icons/SettingsIcon";
+import {
+  SettingsIcon,
+  AccountIcon,
+  MailIcon,
+  PencilIcon,
+  CodeIcon,
+  GithubIcon,
+  FilesIcon,
+} from "../icons/SidebarIcons";
 
 const sidebarTopItems = [
   {

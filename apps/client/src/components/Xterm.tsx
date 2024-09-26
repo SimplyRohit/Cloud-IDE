@@ -40,7 +40,6 @@ const Xterm = () => {
 
       socket.on("terminal:data", (data) => {
         term.write(data);
-        term.scrollToBottom();
       });
 
       return () => {

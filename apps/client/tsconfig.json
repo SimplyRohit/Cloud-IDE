@@ -26,7 +26,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/app/terminal"
+    "src/app/terminal",
+    "src/icons/FileIcons.jsx"
   ],
   "exclude": ["node_modules"]
 }

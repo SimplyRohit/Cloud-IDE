@@ -1,9 +1,11 @@
-import ErrorIcon from "../icons/ErrorIcon";
-import WarningIcon from "../icons/WarningIcon";
-import BellIcon from "../icons/BellIcon";
-import CheckIcon from "../icons/CheckIcon";
-import NextjsIcon from "../icons/NextjsIcon";
-import SourceControlIcon from "../icons/SourceControlIcon";
+import {
+  ErrorIcon,
+  WarningIcon,
+  BellIcon,
+  CheckIcon,
+  NextjsIcon,
+  SourceControlIcon,
+} from "../icons/BottombarIcons";
 
 const Bottombar = () => {
   return (
