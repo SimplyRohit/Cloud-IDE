@@ -23,11 +23,13 @@ const io = new SocketServer(server, {
 });
 
 app.use(cors());
-app.use(express.json());
 
+app.use(express.json());
 const ptyProcess = pty.spawn("bash", [], {
   name: "xterm-color",
-  cwd: "user",
+  cols: 10000,
+  rows: 10000,
+  cwd: process.env.INIT_CWD + "/user",
   env: process.env,
 });
 

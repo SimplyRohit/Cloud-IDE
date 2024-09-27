@@ -9,15 +9,14 @@ const MonacoEditor: React.FC<any> = ({
 }) => {
   const monaco = useMonaco();
 
-
   useEffect(() => {
     if (monaco) {
       monaco.editor.defineTheme("custom-dark", {
-        base: "vs-dark", 
-        inherit: true, 
+        base: "vs-dark",
+        inherit: true,
         rules: [],
         colors: {
-          "editor.background": "#1F1F1F", 
+          "editor.background": "#1F1F1F",
         },
       });
       monaco.editor.setTheme("custom-dark");
@@ -33,7 +32,7 @@ const MonacoEditor: React.FC<any> = ({
           onChange(newValue);
         }
       }}
-      theme="custom-dark" 
+      theme="custom-dark"
     />
   );
 };
