@@ -6,10 +6,9 @@ const docker = new Docker({ socketPath: "/var/run/docker.sock" });
 export async function POST(req: NextRequest) {
   try {
     const data = await req.json();
-
     const id = data.userId;
     const containerOptions = {
-      Image: "cloud-ide2",
+      Image: "simplyrohit/cloud-ide2",
       name: `container-${id}`,
       HostConfig: {
         PortBindings: {
