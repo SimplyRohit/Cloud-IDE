@@ -1,3 +1,4 @@
+//sec/apps/api/docker/start/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import Docker from "dockerode";
 
@@ -8,41 +9,26 @@ export async function POST(req: NextRequest) {
     const data = await req.json();
     const id = data.userId;
     const containerOptions = {
-      Image: "simplyrohit/cloud-ide2",
-      name: `container-${id}`,
-      HostConfig: {
-        PortBindings: {
-          "9000/tcp": [
-            {
-              HostPort: "9000",
-            },
-          ],
-        },
-        Binds: [`${process.cwd()}/user:/usr/src/app/user`],
-      },
+      Image: "cloud-ide:latest",
+      name: `${id}`,
       AutoRemove: true,
     };
+
+    setTimeout(async () => {
+      try {
+        console.log(`Stopping container: ${id}`);
+        const container = docker.getContainer(id);
+        await container.stop();
+        await container.remove();
+        console.log(`Container stopped and removed: ${id}`);
+      } catch (err) {
+        console.error(`Error stopping container: ${err}`);
+      }
+    }, 10000);
 
     const container = await docker.createContainer(containerOptions);
 
     await container.start();
-
-    setTimeout(async () => {
-      try {
-        await container.stop();
-        await container.remove();
-
-        return NextResponse.json({
-          message: "Docker container stopped and removed successfully!",
-        });
-      } catch (err) {
-        console.error("Error during container stop/remove:", err);
-        return NextResponse.json(
-          { message: "Failed to stop Docker container", error: err },
-          { status: 500 }
-        );
-      }
-    }, 100000);
 
     return NextResponse.json({
       message: "Docker container started",

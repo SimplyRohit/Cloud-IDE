@@ -1,0 +1,24 @@
+{
+  "name": "traefik",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/http-proxy": "^1.17.15",
+    "@types/node": "^20",
+    "@types/dockerode": "^3.3.31"
+  },
+  "dependencies": {
+    "dockerode": "^4.0.2",
+    "express": "^4.21.0",
+    "http-proxy": "^1.18.1",
+    "node": "^22.9.0",
+    "nodemon": "^3.1.4"
+  }
+}

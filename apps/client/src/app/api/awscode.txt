@@ -1,0 +1,162 @@
+import { NextRequest, NextResponse } from "next/server";
+import {
+  ECSClient,
+  RunTaskCommand,
+  StopTaskCommand,
+  DescribeTasksCommand,
+} from "@aws-sdk/client-ecs";
+
+const ecsClient = new ECSClient({ region: "ap-south-1" });
+
+export async function POST(req: NextRequest) {
+  try {
+    const { userId } = await req.json();
+    console.log(`Starting ECS task for user: ${userId}`);
+
+    const runTaskCommand = new RunTaskCommand({
+      cluster: "ide",
+      taskDefinition: "user-task",
+      launchType: "FARGATE",
+      networkConfiguration: {
+        awsvpcConfiguration: {
+          subnets: ["subnet-0a9b4426d67891371"],
+          assignPublicIp: "ENABLED",
+        },
+      },
+      overrides: {
+        containerOverrides: [
+          {
+            name: "user-conatiner",
+            environment: [{ name: "USER_ID", value: userId }],
+          },
+        ],
+      },
+    });
+
+    const response = await ecsClient.send(runTaskCommand);
+    const taskArn = response.tasks[0]?.taskArn;
+
+    if (!taskArn) {
+      throw new Error("Failed to start the ECS task.");
+    }
+
+    console.log(`Task started: ${taskArn}`);
+
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+
+    const describeTasksCommand = new DescribeTasksCommand({
+      cluster: "ide",
+      tasks: [taskArn],
+    });
+
+    const describeTasksResponse = await ecsClient.send(describeTasksCommand);
+    const task = describeTasksResponse.tasks?.[0];
+
+    const networkInterfaces = task.attachments?.[0]?.details;
+    const publicIpDetail = networkInterfaces?.find(
+      (detail) => detail.name === "networkInterfaceId"
+    );
+
+    const publicIp = publicIpDetail;
+
+    setTimeout(async () => {
+      try {
+        console.log(`Stopping ECS task: ${taskArn}`);
+        const stopTaskCommand = new StopTaskCommand({
+          cluster: "ide",
+          task: taskArn,
+        });
+        await ecsClient.send(stopTaskCommand);
+        console.log(`ECS task stopped successfully: ${taskArn}`);
+      } catch (err) {
+        console.error(`Error stopping ECS task: ${err}`);
+      }
+    }, 100000);
+
+    return NextResponse.json({
+      message: "ECS task started for user",
+      taskArn: taskArn,
+      publicIp: publicIp,
+    });
+  } catch (error) {
+    console.error("Error starting ECS task:", error);
+    return NextResponse.json(
+      { message: "Failed to start ECS task", error },
+      { status: 500 }
+    );
+  }
+}
+
+
+//running 
+import { NextRequest, NextResponse } from "next/server";
+import {
+  ECSClient,
+  ListTasksCommand,
+  DescribeTasksCommand,
+} from "@aws-sdk/client-ecs";
+
+const ecsClient = new ECSClient({ region: "ap-south-1" });
+
+export async function POST(req: NextRequest) {
+  try {
+    const { userId } = await req.json();
+    console.log(`Checking ECS task for user: ${userId}`);
+
+    const listTasksCommand = new ListTasksCommand({
+      cluster: "ide",
+      family: "user-task",
+    });
+
+    const listTasksResponse = await ecsClient.send(listTasksCommand);
+    const taskArns = listTasksResponse.taskArns;
+
+    if (!taskArns || taskArns.length === 0) {
+      return NextResponse.json({
+        running: false,
+        publicIp: null,
+      });
+    }
+
+    const describeTasksCommand = new DescribeTasksCommand({
+      cluster: "ide",
+      tasks: taskArns,
+    });
+
+    const describeTasksResponse = await ecsClient.send(describeTasksCommand);
+    const tasks = describeTasksResponse.tasks;
+
+    const matchedTask = tasks.find((task) => {
+      const containerOverrides = task.overrides?.containerOverrides?.[0];
+      const envVar = containerOverrides?.environment?.find(
+        (env) => env.name === "USER_ID" && env.value === userId
+      );
+      return !!envVar;
+    });
+
+    if (!matchedTask) {
+      return NextResponse.json({
+        running: false,
+        publicIp: null,
+      });
+    }
+
+    const networkInterfaces = matchedTask.attachments?.[0]?.details;
+    const publicIpDetail = networkInterfaces?.find(
+      (detail) => detail.name === "networkInterfaceId"
+    );
+    const publicIp = publicIpDetail?.value || "IP not available";
+
+    return NextResponse.json({
+      message: "Task is running",
+      running: true,
+      publicIp: publicIp,
+    });
+  } catch (error) {
+    console.error("Error checking ECS task:", error);
+    return NextResponse.json(
+      { message: "Failed to check ECS task", error },
+      { status: 500 }
+    );
+  }
+}

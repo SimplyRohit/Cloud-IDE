@@ -2,12 +2,12 @@
 
 import React, { useEffect, useRef } from "react";
 import { Terminal } from "@xterm/xterm";
-import socket from "../../socket";
 import "@xterm/xterm/css/xterm.css";
-
-const Xterm = () => {
+import { io } from "socket.io-client";
+const Xterm = (props) => {
   const terminalRef = useRef(null);
-
+  const socket = io(`http://${props.port}.localhost`);
+  console.log("terminal", props.port);
   useEffect(() => {
     if (terminalRef.current) {
       const term = new Terminal({
@@ -26,7 +26,7 @@ const Xterm = () => {
 
       term.onData(async (input) => {
         try {
-          await fetch("http://localhost:9000/api/terminal", {
+          await fetch(`http://${props.port}.localhost/api/terminal`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

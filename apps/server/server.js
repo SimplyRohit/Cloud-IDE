@@ -1,3 +1,4 @@
+//docker code
 import http from "http";
 import chokidar from "chokidar";
 import express from "express";
@@ -49,6 +50,10 @@ app.post("/api/terminal", (req, res) => {
   const { data } = req.body;
   ptyProcess.write(data);
   res.sendStatus(200);
+});
+
+app.get("/health", (req, res) => {
+  res.sendStatus(200).send("OK");
 });
 
 app.get("/files", async (req, res) => {

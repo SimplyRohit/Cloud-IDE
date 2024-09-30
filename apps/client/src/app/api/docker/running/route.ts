@@ -1,3 +1,4 @@
+//sec/apps/api/docker/running/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import Docker from "dockerode";
 
@@ -10,7 +11,7 @@ export async function POST(req: NextRequest) {
     const containers = await docker.listContainers({ all: false });
 
     const isRunning = containers.some((container) =>
-      container.Names.includes(`/container-${userId}`)
+      container.Names.includes(`${userId}`)
     );
 
     return NextResponse.json({

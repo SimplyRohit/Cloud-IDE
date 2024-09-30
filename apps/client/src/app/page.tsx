@@ -19,7 +19,7 @@ const HomePage = () => {
   const [isExplorerOpen, setIsExplorerOpen] = useState(true);
   const [isXtermOpen, setIsXtermOpen] = useState(true);
   const [isDockerRunning, setIsDockerRunning] = useState(false);
-
+  const [port, setPort] = useState("");
   useEffect(() => {
     const cookies = nookies.get();
 
@@ -29,8 +29,9 @@ const HomePage = () => {
         maxAge: 30 * 24 * 60 * 60,
         path: "/",
       });
+      setPort(userId);
     }
-
+    setPort(cookies.userId);
     checkDockerContainerRunning();
   }, []);
   // useEffect(() => {
@@ -49,6 +50,7 @@ const HomePage = () => {
       if (response.data.running) {
         console.log("Docker container is already running.");
         setIsDockerRunning(true);
+        // stopDockerContainer();
       } else {
         console.log("Docker container is not running.");
         setIsDockerRunning(false);
@@ -57,6 +59,23 @@ const HomePage = () => {
       console.error("Error checking Docker container status:", error);
     }
   };
+
+  // const stopDockerContainer = async () => {
+  //   const cookies = nookies.get();
+  //   try {
+  //     const response = await axios.post("/api/docker/stop", {
+  //       userId: cookies.userId,
+  //     });
+  //     if (
+  //       response.data.message ===
+  //       "Docker container stopped and removed successfully!"
+  //     ) {
+  //       setIsDockerRunning(false);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error stopping Docker container:", error);
+  //   }
+  // };
 
   const startDockerContainer = async () => {
     const cookies = nookies.get();
@@ -81,7 +100,7 @@ const HomePage = () => {
   const fetchFileContent = async (filePath: string) => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/files/${encodeURIComponent(filePath)}`
+        `http://${port}.localhost/files/${encodeURIComponent(filePath)}`
       );
       setFileContent(response.data);
     } catch (error) {
@@ -115,7 +134,7 @@ const HomePage = () => {
     if (activeFilePath && fileContent) {
       try {
         await axios.post(
-          `http://localhost:9000/files/${encodeURIComponent(activeFilePath)}`,
+          `http://${port}.localhost/files/${encodeURIComponent(activeFilePath)}`,
           {
             content: fileContent,
           }
@@ -159,7 +178,7 @@ const HomePage = () => {
                 className="flex w-[20%]  h-full "
                 preferredSize="20%"
               >
-                <Explorer onFileSelect={handleFileSelect} />
+                <Explorer onFileSelect={handleFileSelect} port={port} />
               </Allotment.Pane>
             )}
             <div className="flex w-full h-full flex-col">
@@ -200,7 +219,7 @@ const HomePage = () => {
                 )}
                 {isXtermOpen && (
                   <Allotment.Pane className="flex h-full" preferredSize="20%">
-                    <Xterm />
+                    <Xterm port={port} />
                   </Allotment.Pane>
                 )}
               </Allotment>
