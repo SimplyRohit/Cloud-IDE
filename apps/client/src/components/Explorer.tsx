@@ -12,7 +12,7 @@ import {
 } from "../icons/ExplorerFolderIcons";
 import { GitIcon, ReacttsIcon } from "../icons/ExplorerFileIcons";
 
-const Explorer = ({ onFileSelect }, props) => {
+const Explorer = ({ onFileSelect  , ...props } : any ) => {
   console.log("Explorer", props.port);
   const socket = io(`http://${props.port}.localhost`);
   const [fileTree, setFileTree] = useState({});

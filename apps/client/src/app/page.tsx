@@ -34,25 +34,18 @@ const HomePage = () => {
     setPort(cookies.userId);
     checkDockerContainerRunning();
   }, []);
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     checkDockerContainerRunning();
-  //   }, 5000);
-  //   return () => clearInterval(interval);
-  // }, []);
+
   const checkDockerContainerRunning = async () => {
     const cookies = nookies.get();
     try {
-      const response = await axios.post("/api/docker/running", {
+      const response = await axios.post("http://localhost:8080/api/running", {
         userId: cookies.userId,
       });
 
-      if (response.data.running) {
-        console.log("Docker container is already running.");
+      if (response.data.status === "running") {
         setIsDockerRunning(true);
-        // stopDockerContainer();
+ 
       } else {
-        console.log("Docker container is not running.");
         setIsDockerRunning(false);
       }
     } catch (error) {
@@ -60,31 +53,15 @@ const HomePage = () => {
     }
   };
 
-  // const stopDockerContainer = async () => {
-  //   const cookies = nookies.get();
-  //   try {
-  //     const response = await axios.post("/api/docker/stop", {
-  //       userId: cookies.userId,
-  //     });
-  //     if (
-  //       response.data.message ===
-  //       "Docker container stopped and removed successfully!"
-  //     ) {
-  //       setIsDockerRunning(false);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error stopping Docker container:", error);
-  //   }
-  // };
-
   const startDockerContainer = async () => {
     const cookies = nookies.get();
     try {
-      const response = await axios.post("/api/docker/start", {
+      const response = await axios.post("http://localhost:8080/api/container", {
         userId: cookies.userId,
       });
-      if (response.data.message === "Docker container started") {
+      if (response.data.status === "success") {
         setIsDockerRunning(true);
+        console.log("start", response.data);
       }
     } catch (error) {
       console.error("Error starting Docker container:", error);
