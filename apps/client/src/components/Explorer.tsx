@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { ChevronRight, FolderOpen, FolderClosed, FileIcon } from "lucide-react";
 import axios from "axios";
 import { io } from "socket.io-client";
-
+import nookies from "nookies";
 import {
   FolderNodeIcon,
   FolderNodeIconOpen,
@@ -11,10 +11,10 @@ import {
   FolderNextIconOpen,
 } from "../icons/ExplorerFolderIcons";
 import { GitIcon, ReacttsIcon } from "../icons/ExplorerFileIcons";
-
-const Explorer = ({ onFileSelect  , ...props } : any ) => {
-  console.log("Explorer", props.port);
-  const socket = io(`http://${props.port}.localhost`);
+const Explorer = ({ onFileSelect } : any ) => {
+  const cookies = nookies.get();
+  const userId = cookies.userId;
+  const socket = io(`http://${userId}.localhost`);
   const [fileTree, setFileTree] = useState({});
   const [openDirectories, setOpenDirectories] = useState(new Map());
 
@@ -31,7 +31,7 @@ const Explorer = ({ onFileSelect  , ...props } : any ) => {
 
   const fetchFileTree = async () => {
     try {
-      const response = await axios.get(`http://${props.port}.localhost/files`);
+      const response = await axios.get(`http://${userId}.localhost/files`);
       setFileTree(response.data);
     } catch (error) {
       console.error("Error fetching file tree:", error);

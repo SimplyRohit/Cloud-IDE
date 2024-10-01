@@ -4,10 +4,12 @@ import React, { useEffect, useRef } from "react";
 import { Terminal } from "@xterm/xterm";
 import "@xterm/xterm/css/xterm.css";
 import { io } from "socket.io-client";
-const Xterm = (props) => {
+import nookies from "nookies";
+const Xterm = () => {
+  const cookies = nookies.get();
+  const userId = cookies.userId;
+  const socket = io(`http://${userId}.localhost`);
   const terminalRef = useRef(null);
-  const socket = io(`http://${props.port}.localhost`);
-  console.log("terminal", props.port);
   useEffect(() => {
     if (terminalRef.current) {
       const term = new Terminal({
@@ -21,12 +23,12 @@ const Xterm = (props) => {
       });
 
       term.open(terminalRef.current);
+          term.write(`Welcome to Code. Type 'help' for help.\r\n`);
 
-      term.write("[rohit@arch user]$ ");
 
       term.onData(async (input) => {
         try {
-          await fetch(`http://${props.port}.localhost/api/terminal`, {
+          await fetch(`http://${userId}.localhost/api/terminal`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
