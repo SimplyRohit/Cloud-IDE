@@ -96,9 +96,6 @@ app.post("/files/:filePath", async (req, res) => {
   }
 });
 
-server.listen(9000, () => {
-  console.log("Server started on port 9000");
-});
 
 async function getFileListTree(dir) {
   const tree = {};
@@ -131,4 +128,8 @@ const watcher = chokidar.watch("user", {
 watcher.on("all", (event, path) => {
   console.log(`File ${event}: ${path}`);
   io.emit("file-change", { event, path });
+});
+
+server.listen(8008, () => {
+  console.log("Server started on port 8008");
 });

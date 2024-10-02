@@ -10,5 +10,5 @@ RUN mkdir -p /home/server/user \
     && chown -R user:user /home/server/user \
     && chmod -R 700 /home/server/user
 USER user
-EXPOSE 9000
+EXPOSE 8008
 CMD ["pnpm", "dev"]
