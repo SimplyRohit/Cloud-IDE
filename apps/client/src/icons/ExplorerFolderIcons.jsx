@@ -51,3 +51,22 @@ export const FolderNextIconOpen = (props) => {
     </svg>
   );
 };
+
+export const DefaultIcon = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" {...props}>
+    <path
+      fill="#546e7a"
+      d="m13.844 7.536-1.288-1.072A2 2 0 0 0 11.276 6H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h24a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2H15.124a2 2 0 0 1-1.28-.464Z"
+    />
+  </svg>
+);
+
+export const DefaultIconOpen = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" {...props}>
+    <path
+      fill="#546e7a"
+      d="M28.967 12H9.442a2 2 0 0 0-1.898 1.368L4 24V10h24a2 2 0 0 0-2-2H15.124a2 2 0 0 1-1.28-.464l-1.288-1.072A2 2 0 0 0 11.276 6H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h22l4.805-11.212A2 2 0 0 0 28.967 12Z"
+    />
+   
+  </svg>
+);

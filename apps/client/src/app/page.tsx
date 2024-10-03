@@ -136,22 +136,22 @@ const HomePage = () => {
 
   return (
     <div className="flex w-screen h-screen  flex-col ">
-      <Titlebar />
+      {/* <Titlebar /> */}
       <div className="flex w-full h-full flex-row">
-        <div className="flex ">
+        {/* <div className="flex ">
           <Sidebar
             isExplorerOpen={isExplorerOpen}
             setIsExplorerOpen={setIsExplorerOpen}
             isXtermOpen={isXtermOpen}
             setIsXtermOpen={setIsXtermOpen}
           />
-        </div>
+        </div> */}
         <div className="flex  w-full h-full flex-row">
           <Allotment>
             {isExplorerOpen && (
               <Allotment.Pane
-                className="flex w-[20%]  h-full "
-                preferredSize="20%"
+                className="flex w-[15%]  h-full "
+                preferredSize="15%"
               >
                 <Explorer onFileSelect={handleFileSelect}  />
                 
@@ -171,16 +171,15 @@ const HomePage = () => {
                   User {">"} {activeFilePath.split("/").join(" > ")}
                 </span>
               )}
-              <Allotment vertical>
-                {isDockerRunning ? (
-                  <div className="flex h-full">
+             
+                {/* {isDockerRunning ? ( */}
                     <MonacoEditor
                       value={fileContent}
                       language="javascript"
                       onChange={(newValue) => setFileContent(newValue)}
                     />
-                  </div>
-                ) : (
+                 
+                {/* ) : (
                   <div className="flex h-full w-full items-center justify-center text-white">
                     <span className="flex flex-row">
                       <h1>
@@ -192,25 +191,22 @@ const HomePage = () => {
                       </button>
                     </span>
                   </div>
-                )}
-                {isXtermOpen && (
-                  <Allotment.Pane className="flex h-full" preferredSize="20%">
+                )} */}
+           
                     <Xterm  />
-                  </Allotment.Pane>
-                )}
-              </Allotment>
+             
             </div>
-          </Allotment>
+        
+
+
+            <Allotment.Pane className="flex w-full h-full " preferredSize="25%">
+         <div className="w-full h-full border-[1rem] border-[#181818]">
+
+         </div>
+          </Allotment.Pane>
+        </Allotment>
         </div>
       </div>
-      <div className="flex">
-        <Bottombar />
-      </div>
-      {/* {isLogin && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <Auth />
-        </div>
-      )} */}
     </div>
   );
 };

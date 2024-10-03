@@ -20,34 +20,34 @@ async function cleanupContainers() {
     }
   }
 }
-const CHECK_INTERVAL = 10000; 
-const MAX_RUNNING_TIME = 300000;
-async function monitorRunningContainers() {
-  setInterval(async () => {
-    try {
-      const containers = await docker.listContainers({ all: false });
+// const CHECK_INTERVAL = 10000; 
+// const MAX_RUNNING_TIME = 300000;
+// async function monitorRunningContainers() {
+//   setInterval(async () => {
+//     try {
+//       const containers = await docker.listContainers({ all: false });
 
-      for (const container of containers) {
+//       for (const container of containers) {
     
-        if (container.Image.includes("cloud-ide")) {
-          const containerInstance = await docker.getContainer(container.Id);
-          const containerInfo = await containerInstance.inspect();
-          const runningTime = Date.now() - new Date(containerInfo.State.StartedAt).getTime();
+//         if (container.Image.includes("cloud-ide")) {
+//           const containerInstance = await docker.getContainer(container.Id);
+//           const containerInfo = await containerInstance.inspect();
+//           const runningTime = Date.now() - new Date(containerInfo.State.StartedAt).getTime();
 
-          if (runningTime > MAX_RUNNING_TIME) {
-            console.log(`Stopping and removing container: ${container.Names[0]} (running for ${Math.round(runningTime / 1000)} seconds)`);
-            await containerInstance.stop();
-            await containerInstance.remove();
-            console.log(`Stopped and removed container: ${container.Names[0]}`);
-          }
-        }
-      }
-    } catch (err) {
-      console.error("Error during container monitoring:", err);
-    }
-  }, CHECK_INTERVAL);
-}
-monitorRunningContainers();
+//           if (runningTime > MAX_RUNNING_TIME) {
+//             console.log(`Stopping and removing container: ${container.Names[0]} (running for ${Math.round(runningTime / 1000)} seconds)`);
+//             await containerInstance.stop();
+//             await containerInstance.remove();
+//             console.log(`Stopped and removed container: ${container.Names[0]}`);
+//           }
+//         }
+//       }
+//     } catch (err) {
+//       console.error("Error during container monitoring:", err);
+//     }
+//   }, CHECK_INTERVAL);
+// }
+// monitorRunningContainers();
 
 
 cleanupContainers()
@@ -98,7 +98,7 @@ docker.getEvents(function (err, stream) {
 
         if (db.has(containerName)) {
           console.log(`Removing ${containerName} from proxy list`);
-          db.delete(containerName);
+            db.delete(containerName)
         }
       }
     } catch (err) {

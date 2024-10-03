@@ -28,8 +28,6 @@ app.use(cors());
 app.use(express.json());
 const ptyProcess = pty.spawn("bash", [], {
   name: "xterm-color",
-  cols: 10000,
-  rows: 10000,
   cwd: process.env.INIT_CWD + "/user",
   env: process.env,
 });
@@ -41,7 +39,7 @@ ptyProcess.onData((data) => {
 io.on("connection", (socket) => {
   console.log(`Socket connected: ${socket.id}`);
 
-  socket.on("disconnect", () => {
+  io.on("disconnect", () => {
     console.log(`Socket disconnected: ${socket.id}`);
   });
 });
@@ -51,6 +49,7 @@ app.post("/api/terminal", (req, res) => {
   ptyProcess.write(data);
   res.sendStatus(200);
 });
+
 
 app.get("/health", (req, res) => {
   res.sendStatus(200).send("OK");

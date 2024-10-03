@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { ChevronRight, FolderOpen, FolderClosed, FileIcon } from "lucide-react";
+import { ChevronRight, FolderOpen, FolderClosed, FileIcon , FileText } from "lucide-react";
 import axios from "axios";
 import { io } from "socket.io-client";
 import nookies from "nookies";
@@ -9,8 +9,10 @@ import {
   FolderNodeIconOpen,
   FolderNextIcon,
   FolderNextIconOpen,
+  DefaultIcon,
+  DefaultIconOpen,
 } from "../icons/ExplorerFolderIcons";
-import { GitIcon, ReacttsIcon } from "../icons/ExplorerFileIcons";
+import { GitIcon, ReacttsIcon  } from "../icons/ExplorerFileIcons";
 const Explorer = ({ onFileSelect } : any ) => {
   const cookies = nookies.get();
   const userId = cookies.userId;
@@ -54,32 +56,32 @@ const Explorer = ({ onFileSelect } : any ) => {
   const getFolderIcon = (folderName, isOpen) => {
     if (folderName === "node_modules") {
       return isOpen ? (
-        <FolderNodeIconOpen className="mr-2 w-4" />
+        <FolderNodeIconOpen className="mr-2 w-5" />
       ) : (
-        <FolderNodeIcon className="mr-2 w-4" />
+        <FolderNodeIcon className="mr-2 w-5" />
       );
     } else if (folderName === "next") {
       return isOpen ? (
-        <FolderNextIconOpen className="mr-2 w-4" />
+        <FolderNextIconOpen className="mr-2 w-5" />
       ) : (
-        <FolderNextIcon className="mr-2 w-4" />
+        <FolderNextIcon className="mr-2 w-5" />
       );
     } else {
       return isOpen ? (
-        <FolderOpen className="mr-2 w-4" />
+        <DefaultIconOpen className="mr-2 w-5" />
       ) : (
-        <FolderClosed className="mr-2 w-4" />
+        <DefaultIcon className="mr-2 w-5" />
       );
     }
   };
 
   const getFileIcon = (fileName) => {
     if (fileName.endsWith(".tsx")) {
-      return <ReacttsIcon className="mr-2 w-4" />;
+      return <ReacttsIcon className="mr-2 w-5" />;
     } else if (fileName.endsWith(".gitignore")) {
-      return <GitIcon className="mr-2 w-4" />;
+      return <GitIcon className="mr-2 w-5" />;
     } else {
-      return <FileIcon className="mr-2 w-4" />;
+      return <FileText className="mr-2 w-4 text-[#546E7A]" />;
     }
   };
 
@@ -108,7 +110,7 @@ const Explorer = ({ onFileSelect } : any ) => {
           return (
             <div key={path + key}>
               <div
-                className="flex items-center cursor-pointer"
+                className="flex text-[0.9rem] items-center cursor-pointer"
                 onClick={() => toggleDirectory(path + key)}
               >
                 {getFolderIcon(key, isOpen)}

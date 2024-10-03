@@ -28,7 +28,8 @@
     "socket.io-client": "^4.7.5",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
-    "uuid": "^10.0.0"
+    "uuid": "^10.0.0",
+    "xterm-addon-fit": "^0.8.0"
   },
   "devDependencies": {
     "@types/node": "^20",
