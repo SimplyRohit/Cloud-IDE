@@ -1,4 +1,4 @@
-//docker code
+//server/src/server.ts
 import http from "http";
 import chokidar from "chokidar";
 import express from "express";
@@ -56,7 +56,7 @@ app.get("/health", (req, res) => {
   res.sendStatus(200).send("OK");
 });
 
-app.get("/files", async (req, res) => {
+app.get("/files", async (req, res): Promise<any> => {
   try {
     const tree = await getFileListTree("user");
     return res.json(tree);
@@ -96,11 +96,10 @@ app.post("/files/:filePath", async (req, res) => {
   }
 });
 
-
-async function getFileListTree(dir) {
+async function getFileListTree(dir: any) {
   const tree = {};
 
-  async function treelist(curdir, currtree) {
+  async function treelist(curdir: any, currtree: any) {
     const files = await fs.readdir(curdir);
     await Promise.all(
       files.map(async (file) => {

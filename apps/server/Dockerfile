@@ -4,11 +4,11 @@ RUN ln -sf /usr/bin/python3 /usr/bin/python
 RUN adduser -D user
 WORKDIR /home/server/
 COPY --chown=user:user . .
-RUN npm install -g pnpm
-RUN pnpm install
+RUN npm install -g pnpm \
+    && pnpm install
 RUN mkdir -p /home/server/user \
     && chown -R user:user /home/server/user \
     && chmod -R 700 /home/server/user
 USER user
 EXPOSE 8008
-CMD ["pnpm", "dev"]
+CMD ["pnpm", "start"]
