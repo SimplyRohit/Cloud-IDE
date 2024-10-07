@@ -6,6 +6,7 @@ const httpProxy = require("http-proxy");
 const docker = new Docker({ socketPath: "/var/run/docker.sock" });
 const db = new Map();
 const proxy = httpProxy.createProxy({});
+const reverseProxyApp = express();
 async function cleanupContainers() {
   const containers = await docker.listContainers({ all: true });
 
@@ -59,13 +60,13 @@ cleanupContainers()
   });
 
 
-docker.getEvents(function (err, stream) {
+docker.getEvents(function (err : any, stream : any) {
   if (err) {
     console.error(err);
     return;
   }
 
-  stream.on("data", async (chunk) => {
+  stream.on("data", async (chunk : any) => {
     try {
       if (!chunk) return;
       const event = JSON.parse(chunk.toString());
@@ -76,7 +77,7 @@ docker.getEvents(function (err, stream) {
         const containerName = containerInfo.Name.substring(1);
         const ipAddress = containerInfo.NetworkSettings.IPAddress;
         const exposedPorts = Object.keys(containerInfo.Config.ExposedPorts);
-        let defaultPort = null;
+        let defaultPort : any = null;
 
         if (exposedPorts && exposedPorts.length > 0) {
           const [port, type] = exposedPorts[0].split("/");
@@ -107,8 +108,8 @@ docker.getEvents(function (err, stream) {
   });
 });
 
-const reverseProxyApp = express();
-reverseProxyApp.use((req, res) => {
+
+reverseProxyApp.use((req : any, res : any) => {
   const hostname = req.hostname;
   const subdomain = hostname.split(".")[0];
 
@@ -126,7 +127,7 @@ reverseProxyApp.use((req, res) => {
 });
 
 const reverseProxy = http.createServer(reverseProxyApp);
-reverseProxy.on("upgrade", (req, socket, head) => {
+reverseProxy.on("upgrade", (req : any , socket : any, head : any) => {
   const hostname = req.headers.host;
   const subdomain = hostname.split(".")[0];
 
@@ -148,7 +149,7 @@ reverseProxy.on("upgrade", (req, socket, head) => {
 const managementAPI = express();
 managementAPI.use(express.json());
 
-managementAPI.post("/container", async (req, res) => {
+managementAPI.post("/container", async (req : any , res : any) => {
   const image = "cloud-ide"; 
   const tag = "latest"; 
   
@@ -184,7 +185,7 @@ managementAPI.post("/container", async (req, res) => {
   });
 });
 
-managementAPI.post("/start", async (req, res) => {
+managementAPI.post("/start", async (req : any, res : any) => {
   const { userId } = req.body;
   const containerOptions = {
     Image: "cloud-ide",
@@ -200,10 +201,10 @@ managementAPI.post("/start", async (req, res) => {
   });
 });
 
-managementAPI.post("/running", async (req, res) => {
+managementAPI.post("/running", async (req : any , res : any) => {
   const { userId } = req.body;
   const containers = await docker.listContainers({ all: false });
-  const isRunning = containers.some((container) =>
+  const isRunning = containers.some((container : any) =>
     container.Names.includes(`/${userId}`)
   );
 
@@ -212,7 +213,7 @@ managementAPI.post("/running", async (req, res) => {
   });
 });
 
-managementAPI.post("/stop", async (req, res) => {
+managementAPI.post("/stop", async (req : any, res : any) => {
   const { userId } = req.body;
   const container = await docker.getContainer(`${userId}`);
   await container.stop();

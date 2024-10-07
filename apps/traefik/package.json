@@ -3,16 +3,19 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "npx tsc && nodemon dist/index.js",
+    "build": "npx tsc",
+    "start": "nodemon dist/index.js"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@types/dockerode": "^3.3.31",
     "@types/express": "^5.0.0",
     "@types/http-proxy": "^1.17.15",
     "@types/node": "^20",
-    "@types/dockerode": "^3.3.31"
+    "typescript": "^5.6.2"
   },
   "dependencies": {
     "dockerode": "^4.0.2",
