@@ -1,7 +1,7 @@
-const http = require("http");
-const Docker = require("dockerode");
-const express = require("express");
-const httpProxy = require("http-proxy");
+import http from "http"
+import Docker from "dockerode"
+import express from "express"
+import httpProxy from "http-proxy"
 
 const docker = new Docker({ socketPath: "/var/run/docker.sock" });
 const db = new Map();
@@ -156,7 +156,7 @@ managementAPI.post("/container", async (req : any, res : any) => {
 
   const images = await docker.listImages();
   for (const systemImage of images) {
-    for (const systemTag of systemImage.RepoTags) {
+    for (const systemTag of systemImage.RepoTags || []) {
       if (systemTag === `${image}:${tag}`) {
         imageAlreadyExist = true;
         break;
