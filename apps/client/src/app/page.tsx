@@ -31,6 +31,9 @@ const HomePage = () => {
     checkDockerContainerRunning();
   }, []);
 
+  const cookies = nookies.get();
+  const userID = cookies.userId;
+
   const checkDockerContainerRunning = async () => {
     const cookies = nookies.get();
     try {
@@ -75,7 +78,7 @@ const HomePage = () => {
   const fetchFileContent = async (filePath: string) => {
     try {
       const response = await axios.get(
-        `http://f644abb7-fa50-4826-9935-8b7c7a62c0a1.localhost/files/${encodeURIComponent(filePath)}`
+        `http://${userID}.localhost/files/${encodeURIComponent(filePath)}`
       );
       setFileContent(response.data);
     } catch (error) {
@@ -109,7 +112,7 @@ const HomePage = () => {
     if (activeFilePath && fileContent) {
       try {
         await axios.post(
-          `http://f644abb7-fa50-4826-9935-8b7c7a62c0a1.localhost/files/${encodeURIComponent(activeFilePath)}`,
+          `http://${userID}.localhost/files/${encodeURIComponent(activeFilePath)}`,
           {
             content: fileContent,
           }

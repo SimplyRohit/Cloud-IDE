@@ -4,9 +4,7 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "dev": "npx tsc && nodemon dist/server.js",
-    "build": "npx tsc",
-    "start": "nodemon dist/server.js"
+    "dev": "npx tsc && nodemon dist/server.js"
   },
   "dependencies": {
     "chokidar": "^4.0.0",
