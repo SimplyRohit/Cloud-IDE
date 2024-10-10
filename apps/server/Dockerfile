@@ -9,5 +9,5 @@ RUN mkdir -p /home/server/user \
     && chown -R user:user /home/server/user \
     && chmod -R 700 /home/server/user
 USER user
-EXPOSE 8008
+EXPOSE 9100
 CMD ["npm", "run" , "dev"]

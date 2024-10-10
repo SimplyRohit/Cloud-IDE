@@ -33,6 +33,7 @@ const MonacoEditor: React.FC<any> = ({
         }
       }}
       theme="custom-dark"
+      loading={null}
     />
   );
 };

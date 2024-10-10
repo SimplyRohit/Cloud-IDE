@@ -28,9 +28,7 @@ app.use(cors());
 app.use(express.json());
 const ptyProcess = pty.spawn("bash", [], {
   name: "xterm-color",
-  cols: 10000,
-  rows: 10000,
-  cwd: process.env.INIT_CWD + "/user",
+  cwd: "user",
   env: process.env,
 });
 
@@ -129,6 +127,6 @@ watcher.on("all", (event, path) => {
   io.emit("file-change", { event, path });
 });
 
-server.listen(8008, () => {
-  console.log("Server started on port 8008");
+server.listen(9100, () => {
+  console.log("Server started on port 9100");
 });

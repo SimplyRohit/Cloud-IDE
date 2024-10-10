@@ -11,7 +11,7 @@ import {
   FolderNextIconOpen,
 } from "../icons/ExplorerFolderIcons";
 import { GitIcon, ReacttsIcon } from "../icons/ExplorerFileIcons";
-const Explorer = ({ onFileSelect } : any ) => {
+const Explorer = ({ onFileSelect }: any) => {
   const cookies = nookies.get();
   const userId = cookies.userId;
   const socket = io(`http://${userId}.localhost`);
