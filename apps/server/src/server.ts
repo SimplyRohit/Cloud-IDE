@@ -127,6 +127,6 @@ watcher.on("all", (event, path) => {
   io.emit("file-change", { event, path });
 });
 
-server.listen(9100, () => {
-  console.log("Server started on port 9100");
+server.listen(9000, () => {
+  console.log("Server started on port 9000");
 });
