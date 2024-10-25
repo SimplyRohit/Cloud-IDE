@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
-import Image from "next/image";
-import vscode_icon from "../public/vscode_icon.svg";
+// import Image from "next/image";
+// import vscode_icon from "../public/vscode_icon.svg";
 import nookies from "nookies";
 import axios from "axios";
 import { CircleStopIcon, CirclePlayIcon } from "lucide-react";
@@ -75,15 +75,15 @@ const Titlebar = () => {
     }
   };
   return (
-    <section className="bg-[#181818] w-full  h-8 px-2 flex items-center justify-center text-white text-sm border-b-[1px] border-[#2B2B2B] font-sans">
-      <Image
+    <section className="bg-[#181818] w-full  h-8  flex items-center justify-center text-white text-sm border-b-[1px] border-[#2B2B2B] font-sans">
+      {/* <Image
         src={vscode_icon.src}
         alt="VSCode Icon"
         height={15}
         width={15}
         className="ml-2"
-      />
-      <div className="flex w-full  ml-3">
+      /> */}
+      <div className="flex w-full ">
         <p className="px-2 cursor-pointer">File</p>
         <p className="px-2 cursor-pointer">Edit</p>
         <p className="px-2 cursor-pointer">View</p>

@@ -1,7 +1,7 @@
 import Docker from "dockerode";
 import express from "express";
-
 const docker = new Docker({ socketPath: "/var/run/docker.sock" });
+
 async function listStopAndRemoveCloudIdeContainers() {
   const containers = await docker.listContainers({ all: true });
   const cloudIdeContainers = containers.filter((container) =>

@@ -13,6 +13,22 @@
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "build-server": {
+      "cache": false,
+      "persistent": true
+    },
+    "start-server": {
+      "cache": false,
+      "persistent": true
+    },
+    "build-proxy": {
+      "cache": false,
+      "persistent": true
+    },
+    "start-proxy": {
+      "cache": false,
+      "persistent": true
     }
   }
 }

@@ -5,7 +5,7 @@ import Tabsbar from "../components/Tabsbar";
 import Explorer from "../components/Explorer";
 import Xterm from "../components/Xterm";
 import Titlebar from "../components/Titlebar";
-import Sidebar from "../components/Sidebar";
+// import Sidebar from "../components/Sidebar";
 import Bottombar from "../components/Bottombar";
 import axios from "axios";
 import { Allotment } from "allotment";
@@ -15,8 +15,8 @@ const HomePage = () => {
   const [tabs, setTabs] = useState([]);
   const [activeFilePath, setActiveFilePath] = useState("");
   const [fileContent, setFileContent] = useState("");
-  const [isExplorerOpen, setIsExplorerOpen] = useState(true);
-  const [isXtermOpen, setIsXtermOpen] = useState(true);
+  // const [isExplorerOpen, setIsExplorerOpen] = useState(true);
+  // const [isXtermOpen, setIsXtermOpen] = useState(true);
   const cookies = nookies.get();
   const userID = cookies.userId;
   useEffect(() => {
@@ -91,56 +91,53 @@ const HomePage = () => {
     <div className="flex w-screen h-screen  flex-col ">
       <Titlebar />
       <div className="flex w-full h-full flex-row">
-        <div className="flex ">
+        {/* <div className="flex ">
           <Sidebar
             isExplorerOpen={isExplorerOpen}
             setIsExplorerOpen={setIsExplorerOpen}
             isXtermOpen={isXtermOpen}
             setIsXtermOpen={setIsXtermOpen}
           />
-        </div>
-        <div className="flex  w-full h-full flex-row">
-          <Allotment>
-            {isExplorerOpen && (
-              <Allotment.Pane
-                className="flex w-[20%]  h-full "
-                preferredSize="20%"
-              >
-                <Explorer onFileSelect={handleFileSelect} />
-              </Allotment.Pane>
-            )}
-            <div className="flex w-full h-full flex-col">
-              <div className="flex w-full ">
-                <Tabsbar
-                  tabs={tabs}
-                  activeTab={activeFilePath}
-                  onTabClick={handleTabClick}
-                  onTabClose={handleTabClose}
-                />
-              </div>
-              {activeFilePath && (
-                <span className="text-white ml-2 text-[15px] pb-1">
-                  User {">"} {activeFilePath.split("/").join(" > ")}
-                </span>
-              )}
-              <Allotment vertical>
-                <div className="flex h-full">
-                  <MonacoEditor
-                    value={fileContent}
-                    language="javascript"
-                    onChange={(newValue) => setFileContent(newValue)}
-                  />
-                </div>
+        </div> */}
 
-                {isXtermOpen && (
-                  <Allotment.Pane className="flex h-full" preferredSize="20%">
-                    <Xterm />
-                  </Allotment.Pane>
-                )}
-              </Allotment>
+        <Allotment>
+          {isExplorerOpen && (
+            <Allotment.Pane
+              className="flex w-[20%]  h-full "
+              preferredSize="20%"
+            >
+              <Explorer onFileSelect={handleFileSelect} />
+            </Allotment.Pane>
+          )}
+          <div className="flex w-full h-full flex-col">
+            <div className="flex w-full ">
+              <Tabsbar
+                tabs={tabs}
+                activeTab={activeFilePath}
+                onTabClick={handleTabClick}
+                onTabClose={handleTabClose}
+              />
             </div>
-          </Allotment>
-        </div>
+            {activeFilePath && (
+              <span className="text-white ml-2 text-[15px] pb-1">
+                User {">"} {activeFilePath.split("/").join(" > ")}
+              </span>
+            )}
+            <Allotment vertical>
+              <MonacoEditor
+                value={fileContent}
+                language="javascript"
+                onChange={(newValue) => setFileContent(newValue)}
+              />
+
+              {isXtermOpen && (
+                <Allotment.Pane className="" preferredSize="20%">
+                  <Xterm />
+                </Allotment.Pane>
+              )}
+            </Allotment>
+          </div>
+        </Allotment>
       </div>
       <div className="flex">
         <Bottombar />

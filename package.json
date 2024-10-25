@@ -3,7 +3,11 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
-    "dev": "turbo dev",
+    "build-server": "turbo build-server --filter=server",
+    "start-server": "turbo start-server --filter=server",
+    "build-proxy": "turbo build-proxy --filter=traefik",
+    "start-proxy": "turbo start-proxy --filter=traefik",
+    "dev": "turbo dev --filter=client",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },

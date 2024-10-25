@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "build-proxy": "docker compose down",
+    "start-proxy": " docker compose up -d ",
     "dev": "tsc && nodemon dist/index.js"
   },
   "author": "",

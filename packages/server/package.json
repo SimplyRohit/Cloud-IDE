@@ -4,6 +4,8 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
+    "build-server": "docker build -t Cloud-IDE .",
+    "start-server": "docker run --rm -p 9000:9000 Cloud-IDE",
     "dev": "npx tsc && nodemon dist/server.js"
   },
   "dependencies": {
@@ -17,6 +19,8 @@
   "devDependencies": {
     "@types/express": "4.17.21",
     "@types/cors": "2.8.17",
+    "ts-node": "^10.9.2",
+    "@types/node": "^22.7.9",
     "typescript": "^5.6.2"
   },
   "type": "module"
