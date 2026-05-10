@@ -12,22 +12,35 @@ import {
 } from "../icons/ExplorerFolderIcons";
 import { GitIcon, ReacttsIcon } from "../icons/ExplorerFileIcons";
 const Explorer = ({ onFileSelect }) => {
-  const cookies = nookies.get();
-  const userId = cookies.userId;
-  const socket = io(`http://${userId}.localhost`);
   const [fileTree, setFileTree] = useState({});
   const [openDirectories, setOpenDirectories] = useState(new Map());
+  const [socket, setSocket] = useState(null);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    socket.on("file-change", fetchFileTree);
-    return () => {
-      socket.off("file-change", fetchFileTree);
-    };
+    const cookies = nookies.get();
+    if (cookies.userId) {
+      setUserId(cookies.userId);
+      const newSocket = io(`http://${cookies.userId}.localhost`);
+      setSocket(newSocket);
+      return () => newSocket.disconnect();
+    }
   }, []);
 
   useEffect(() => {
-    fetchFileTree();
-  }, []);
+    if (socket) {
+      socket.on("file-change", fetchFileTree);
+      return () => {
+        socket.off("file-change", fetchFileTree);
+      };
+    }
+  }, [socket]);
+
+  useEffect(() => {
+    if (userId) {
+      fetchFileTree();
+    }
+  }, [userId]);
 
   const fetchFileTree = async () => {
     try {

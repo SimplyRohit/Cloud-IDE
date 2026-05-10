@@ -1,5 +1,6 @@
 import Docker from "dockerode";
 import express from "express";
+import cors from "cors";
 const docker = new Docker({ socketPath: "/var/run/docker.sock" });
 
 async function listStopAndRemoveCloudIdeContainers() {
@@ -23,6 +24,7 @@ listStopAndRemoveCloudIdeContainers()
   .catch((err) => console.error("Error during container cleanup: ", err));
 
 const managementAPI = express();
+managementAPI.use(cors());
 managementAPI.use(express.json());
 
 managementAPI.post("/start", async (req, res): Promise<any> => {
@@ -52,9 +54,9 @@ managementAPI.post("/start", async (req, res): Promise<any> => {
     name: `${req.body.userId}`,
     Labels: {
       "traefik.enable": "true",
-      "traefik.http.routers.userId.rule": `Host(\`${req.body.userId}.localhost\`)`,
-      "traefik.http.routers.userId.entrypoints": "web",
-      "traefik.http.services.userId.loadbalancer.server.port": "9000",
+      [`traefik.http.routers.${req.body.userId}.rule`]: `Host(\`${req.body.userId}.localhost\`)`,
+      [`traefik.http.routers.${req.body.userId}.entrypoints`]: "web",
+      [`traefik.http.services.${req.body.userId}.loadbalancer.server.port`]: "9000",
     },
   });
 

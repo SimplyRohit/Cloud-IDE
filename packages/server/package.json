@@ -4,8 +4,8 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "build-server": "docker build -t Cloud-IDE .",
-    "start-server": "docker run --rm -p 9000:9000 Cloud-IDE",
+    "build-server": "docker build -t cloud-ide .",
+    "start-server": "docker run --rm -p 9000:9000 cloud-ide",
     "dev": "npx tsc && nodemon dist/server.js"
   },
   "dependencies": {

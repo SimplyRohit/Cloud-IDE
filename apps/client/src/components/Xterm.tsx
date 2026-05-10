@@ -6,12 +6,13 @@ import "@xterm/xterm/css/xterm.css";
 import { io } from "socket.io-client";
 import nookies from "nookies";
 const Xterm = () => {
-  const cookies = nookies.get();
-  const userId = cookies.userId;
-  const socket = io(`http://${userId}.localhost`);
   const terminalRef = useRef(null);
   useEffect(() => {
-    if (terminalRef.current) {
+    const cookies = nookies.get();
+    const userId = cookies.userId;
+    if (!userId || !terminalRef.current) return;
+
+    const socket = io(`http://${userId}.localhost`);
       const term = new Terminal({
         cursorBlink: true,
         rows: 10,
@@ -45,8 +46,8 @@ const Xterm = () => {
 
       return () => {
         term.dispose();
+        socket.disconnect();
       };
-    }
   }, []);
 
   return (

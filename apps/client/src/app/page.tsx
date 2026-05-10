@@ -10,15 +10,28 @@ import Bottombar from "../components/Bottombar";
 import axios from "axios";
 import { Allotment } from "allotment";
 import nookies from "nookies";
+import { v4 as uuidv4 } from "uuid";
 import "allotment/dist/style.css";
 const HomePage = () => {
   const [tabs, setTabs] = useState([]);
   const [activeFilePath, setActiveFilePath] = useState("");
   const [fileContent, setFileContent] = useState("");
-  // const [isExplorerOpen, setIsExplorerOpen] = useState(true);
-  // const [isXtermOpen, setIsXtermOpen] = useState(true);
-  const cookies = nookies.get();
-  const userID = cookies.userId;
+  const [isExplorerOpen, setIsExplorerOpen] = useState(true);
+  const [isXtermOpen, setIsXtermOpen] = useState(true);
+  const [userID, setUserID] = useState("");
+
+  useEffect(() => {
+    let cookies = nookies.get();
+    let id = cookies.userId;
+    if (!id) {
+      id = uuidv4();
+      nookies.set(null, "userId", id, {
+        maxAge: 30 * 24 * 60 * 60,
+        path: "/",
+      });
+    }
+    setUserID(id);
+  }, []);
   useEffect(() => {
     if (activeFilePath) {
       fetchFileContent(activeFilePath);
@@ -100,8 +113,9 @@ const HomePage = () => {
           />
         </div> */}
 
-        <Allotment>
-          {isExplorerOpen && (
+        {userID && (
+          <Allotment>
+            {isExplorerOpen && (
             <Allotment.Pane
               className="flex w-[20%]  h-full "
               preferredSize="20%"
@@ -137,7 +151,8 @@ const HomePage = () => {
               )}
             </Allotment>
           </div>
-        </Allotment>
+          </Allotment>
+        )}
       </div>
       <div className="flex">
         <Bottombar />

@@ -4,6 +4,7 @@ import chokidar from "chokidar";
 import express from "express";
 import { Server as SocketServer } from "socket.io";
 import fs from "fs/promises";
+import fsSync from "fs";
 import path from "path";
 import pty from "node-pty";
 import cors from "cors";
@@ -12,6 +13,11 @@ import { dirname } from "path";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+const USER_DIR = path.join(process.cwd(), "user");
+if (!fsSync.existsSync(USER_DIR)) {
+  fsSync.mkdirSync(USER_DIR, { recursive: true });
+}
 
 const app = express();
 const server = http.createServer(app);
@@ -28,7 +34,7 @@ app.use(cors());
 app.use(express.json());
 const ptyProcess = pty.spawn("bash", [], {
   name: "xterm-color",
-  cwd: "user",
+  cwd: USER_DIR,
   env: process.env,
 });
 
@@ -56,7 +62,7 @@ app.get("/health", (req, res) => {
 
 app.get("/files", async (req, res): Promise<any> => {
   try {
-    const tree = await getFileListTree("user");
+    const tree = await getFileListTree(USER_DIR);
     return res.json(tree);
   } catch (error) {
     console.error("Error fetching file tree:", error);
@@ -68,7 +74,7 @@ app.get("/files/:filePath", async (req, res) => {
   try {
     const { filePath } = req.params;
     const fileContent = await fs.readFile(
-      path.join(__dirname, "user", filePath),
+      path.join(USER_DIR, filePath),
       "utf-8"
     );
     res.json(fileContent);
@@ -83,7 +89,7 @@ app.post("/files/:filePath", async (req, res) => {
     const { filePath } = req.params;
     const { content } = req.body;
     await fs.writeFile(
-      path.join(__dirname, "user", filePath),
+      path.join(USER_DIR, filePath),
       content,
       "utf-8"
     );
@@ -117,7 +123,7 @@ async function getFileListTree(dir: any) {
   return tree;
 }
 
-const watcher = chokidar.watch("user", {
+const watcher = chokidar.watch(USER_DIR, {
   ignored: /(^|[\/\\])\../,
   persistent: true,
 });
