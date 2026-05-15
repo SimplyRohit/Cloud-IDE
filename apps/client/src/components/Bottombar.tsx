@@ -7,7 +7,20 @@ import {
   SourceControlIcon,
 } from "../icons/BottombarIcons";
 
-const Bottombar = () => {
+import { GlobeIcon } from "lucide-react";
+
+import { useState } from "react";
+
+const Bottombar = ({ userID }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    const url = `http://PORT-${userID}.localhost`;
+    navigator.clipboard.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <footer className="bg-[#181818] h-[25px] border-t-[1px] border-[#2B2B2B] text-[#e1e4e8] px-2 flex w-full items-center justify-between text-[0.8rem]">
       <div className="flex items-center">
@@ -26,6 +39,14 @@ const Bottombar = () => {
           <WarningIcon className="mr-1" />
           <p>0</p>
         </div>
+        {userID && (
+          <button
+            onClick={handleCopy}
+            className=""
+          >
+            <p>{copied ? "Copied!" : "Copy Preview URL"}</p>
+          </button>
+        )}
       </div>
       <div className="flex items-center">
         <div className="flex items-center mr-2 h-[24px] px-1 cursor-pointer font-[Source Sans Pro] hover:bg-[var(--bottombar-hover-bg)]">

@@ -29,9 +29,15 @@ const Explorer = ({ onFileSelect }) => {
 
   useEffect(() => {
     if (socket) {
-      socket.on("file-change", fetchFileTree);
+      let timeout;
+      const debouncedFetch = () => {
+        clearTimeout(timeout);
+        timeout = setTimeout(fetchFileTree, 500);
+      };
+      socket.on("file-change", debouncedFetch);
       return () => {
-        socket.off("file-change", fetchFileTree);
+        socket.off("file-change", debouncedFetch);
+        clearTimeout(timeout);
       };
     }
   }, [socket]);
@@ -43,6 +49,7 @@ const Explorer = ({ onFileSelect }) => {
   }, [userId]);
 
   const fetchFileTree = async () => {
+    if (!userId) return;
     try {
       const response = await axios.get(`http://${userId}.localhost/files`);
       setFileTree(response.data);

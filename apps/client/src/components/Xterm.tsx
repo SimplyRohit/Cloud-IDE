@@ -26,18 +26,8 @@ const Xterm = () => {
       term.open(terminalRef.current);
       term.write(`Welcome to Code. Type 'help' for help.\r\n`);
 
-      term.onData(async (input) => {
-        try {
-          await fetch(`http://${userId}.localhost/api/terminal`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ data: input }),
-          });
-        } catch (error) {
-          console.error("Error sending data to server:", error);
-        }
+      term.onData((input) => {
+        socket.emit("terminal:input", input);
       });
 
       socket.on("terminal:data", (data) => {

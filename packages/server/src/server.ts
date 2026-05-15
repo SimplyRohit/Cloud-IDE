@@ -32,10 +32,17 @@ const io = new SocketServer(server, {
 app.use(cors());
 
 app.use(express.json());
+const ptyEnv = { ...process.env };
+ptyEnv.PATH = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin";
+if (process.env.PATH) {
+  ptyEnv.PATH += ":" + process.env.PATH.split(":").filter(p => !p.includes("node_modules")).join(":");
+}
+ptyEnv.PNPM_SKIP_WORKER_POOL = "true";
+
 const ptyProcess = pty.spawn("bash", [], {
   name: "xterm-color",
   cwd: USER_DIR,
-  env: process.env,
+  env: ptyEnv,
 });
 
 ptyProcess.onData((data) => {
@@ -45,19 +52,17 @@ ptyProcess.onData((data) => {
 io.on("connection", (socket) => {
   console.log(`Socket connected: ${socket.id}`);
 
+  socket.on("terminal:input", (data) => {
+    ptyProcess.write(data);
+  });
+
   socket.on("disconnect", () => {
     console.log(`Socket disconnected: ${socket.id}`);
   });
 });
 
-app.post("/api/terminal", (req, res) => {
-  const { data } = req.body;
-  ptyProcess.write(data);
-  res.sendStatus(200);
-});
-
 app.get("/health", (req, res) => {
-  res.sendStatus(200).send("OK");
+  res.sendStatus(200);
 });
 
 app.get("/files", async (req, res): Promise<any> => {
@@ -107,6 +112,7 @@ async function getFileListTree(dir: any) {
     const files = await fs.readdir(curdir);
     await Promise.all(
       files.map(async (file) => {
+        if (file === "node_modules" || file === ".git") return;
         const filepath = path.join(curdir, file);
         const stat = await fs.stat(filepath);
         if (stat.isDirectory()) {
@@ -124,12 +130,11 @@ async function getFileListTree(dir: any) {
 }
 
 const watcher = chokidar.watch(USER_DIR, {
-  ignored: /(^|[\/\\])\../,
+  ignored: [/(^|[\/\\])\../, "**/node_modules/**"],
   persistent: true,
 });
 
 watcher.on("all", (event, path) => {
-  console.log(`File ${event}: ${path}`);
   io.emit("file-change", { event, path });
 });
 
